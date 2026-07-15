@@ -15,23 +15,34 @@
   <!-- Ana ekrandan açanda tam ekran, Safari paneli olmadan -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- default: status paneli öz yerini tutur, məzmunun ÜSTÜNƏ düşmür.
+       black-translucent-də saat/batareya loqonun üstünə düşürdü. -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Checking">
   <meta name="theme-color" content="#8E1114">
 
   <style>
-    html, body {
+    html { height: 100%; }
+    body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      /* dvh: ana ekrandan açılanda tam hündürlük — aşağıda qırmızı zolaq qalmasın */
+      height: 100dvh;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
       background: #8E1114;
+      /* Notch/Dynamic Island üçün ehtiyat — default rejimdə adətən 0 olur */
+      padding-top: env(safe-area-inset-top);
+      box-sizing: border-box;
       overscroll-behavior: none;
     }
     #app {
+      flex: 1 1 auto;
       display: block;
       border: 0;
       width: 100%;
-      height: 100%;
+      min-height: 0;
       background: #f6f5f3;
     }
     #hint {
@@ -53,21 +64,19 @@
 </head>
 <body>
 
-<iframe id="app" allow="clipboard-read; clipboard-write" title="Carify Checking List"></iframe>
+<iframe id="app" allow="clipboard-read; clipboard-write; web-share" title="Carify Checking List"></iframe>
 <div id="hint">
   Link yarımçıqdır — açar yoxdur. Ana ekrandakı qısayolu bu formada saxla:
-  <code>.../checking/#key=SECRET KEY</code>
+  <code>https://carifyllc.github.io/Cheking-List/#key=SƏNİN_LOOKUP_SECRET</code>
 </div>
 
 <script>
-  /* ============================================================
-     ADDIM 1: aşağıdakı EXEC_URL-i öz deployment linkinlə əvəz et.
-     Sonundakı /exec-ə qədər yaz, parametr yazma — onu skript özü qoşur.
-     ============================================================ */
+  /* Deployment linki. Yeni deployment yaratsan (New deployment), bunu yenilə —
+     "Manage deployments"-dən versiya artıranda link dəyişmir, toxunma. */
   var EXEC_URL = 'https://script.google.com/macros/s/AKfycbzRcJvOHKR9BA48ItNyFSpVgwEHxhJCAigISws62ddUNphtt3DuLEX8X137HUbKTx9m8A/exec';
 
   /* key linkin # hissəsindən oxunur — repo public olsa da sirr içəridə deyil.
-     Ana ekran linki:  https://<istifadeci>.github.io/<repo>/checking/#key=SECRET  */
+     Ana ekran linki:  https://carifyllc.github.io/Cheking-List/#key=SECRET  */
   var key = '';
   var h = location.hash.replace(/^#/, '');
   h.split('&').forEach(function (part) {
